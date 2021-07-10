@@ -12,7 +12,10 @@ $ composer require rockbuzz/lara-utils
 ## Usage
 
 ```php
-
+Rockbuzz\LaraUtils\Casts\Password::class;
+Rockbuzz\LaraUtils\Casts\Schemaless::class;
+Rockbuzz\LaraUtils\Data\Base::class;
+Rockbuzz\LaraUtils\Traits\HasActive::class;
 ```
 ## License
 

@@ -3,7 +3,7 @@
 namespace Tests;
 
 use Tests\Models\User;
-use Rockbuzz\LaraOrders\ServiceProvider;
+use Rockbuzz\LaraUtils\ServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
 class TestCase extends OrchestraTestCase

@@ -9,12 +9,9 @@ class Logging
 {
     /** @var string|Throwable */
     private $logable;
-    /** @var array */
-    private $context;
-    /** @var LogManager */
-    private $logger;
-    /** @var string */
-    private $channel;
+    private array $context;
+    private string $channel;
+    private LogManager $logger;
 
     public function __construct($logable, array $context = [])
     {
@@ -23,8 +20,8 @@ class Logging
         $this->logger = app('log');
         $this->channel = config('logging.default');
 
-        if ($this->logable instanceof Throwable) {
-            $this->logger->channel('slack')->error($this->logable);
+        if ($this->logable instanceof Throwable && config('utils.logging.channels.errors')) {
+            $this->logger->channel(config('utils.logging.channels.errors'))->error($this->logable);
         }
     }
 
@@ -37,16 +34,22 @@ class Logging
         return $this;
     }
 
-    public function error(): void
+    public function debug(): void
     {
         $this->logger->channel($this->channel)
-            ->error($this->prepareMessage(), $this->context);
+            ->debug($this->prepareMessage(), $this->context);
     }
 
     public function info(): void
     {
         $this->logger->channel($this->channel)
             ->info($this->prepareMessage(), $this->context);
+    }
+
+    public function error(): void
+    {
+        $this->logger->channel($this->channel)
+            ->error($this->prepareMessage(), $this->context);
     }
 
     public function structured(int $step): void

@@ -2,7 +2,6 @@
 
 namespace Tests;
 
-use Tests\Models\User;
 use Rockbuzz\LaraUtils\ServiceProvider;
 use Orchestra\Testbench\TestCase as OrchestraTestCase;
 
@@ -12,46 +11,25 @@ class TestCase extends OrchestraTestCase
     {
         parent::setUp();
 
-        $this->loadLaravelMigrations(['--database' => 'testing']);
-
         $this->loadMigrationsFrom([
-            '--database' => 'testing',
-            '--path' => realpath(__DIR__ . '/../database/migrations'),
-        ]);
-
-        $this->loadMigrationsFrom([
-            '--database' => 'testing',
+            '--database' => 'mysql',
             '--path' => realpath(__DIR__ . '/migrations'),
         ]);
 
-        $this->withFactories(__DIR__.'/factories');
+        $this->withFactories(__DIR__ . '/factories');
     }
 
-
-    protected function getEnvironmentSetUp($app)
+    protected function getEnvironmentSetUp($app): void
     {
-        $app['config']->set('database.default', 'testing');
+        $app['config']->set('database.default', 'mysql');
+        $app['config']->set('database.connections.mysql.host', 'dbutils');
+        $app['config']->set('database.connections.mysql.database', 'testing');
+        $app['config']->set('database.connections.mysql.username', 'testing');
+        $app['config']->set('database.connections.mysql.password', 'secret');
     }
 
-
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [ServiceProvider::class];
-    }
-
-    protected function signIn($attributes = [], $user = null)
-    {
-        $this->actingAs($user ?: $this->create(User::class, $attributes));
-        return $this;
-    }
-
-    protected function create(string $class, array $attributes = [], int $times = null)
-    {
-        return factory($class, $times)->create($attributes);
-    }
-
-    protected function make(string $class, array $attributes = [], int $times = null)
-    {
-        return factory($class, $times)->make($attributes);
     }
 }

@@ -11,6 +11,6 @@
         <exclude-pattern>tests/</exclude-pattern>
     </rule>
     <exclude-pattern>/tests/report/*</exclude-pattern>
-    <exclude-pattern>*/src/database/*$</exclude-pattern>
+    <exclude-pattern>*/database/*$</exclude-pattern>
     <exclude-pattern>*/tests/migrations/*$</exclude-pattern>
 </ruleset>

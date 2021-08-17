@@ -4,37 +4,18 @@ declare(strict_types=1);
 
 namespace Rockbuzz\LaraUtils\Schemaless;
 
-use JsonSerializable;
 use Illuminate\Support\Collection;
 
-abstract class Base implements JsonSerializable
+class Base extends Collection
 {
-    private Collection $items;
+    protected array $default = [];
 
-    public function __construct(array $items)
+    public function __construct($items = [])
     {
-        $this->items = $this->getBaseItems()->merge($items);
-    }
-
-    public function get($key, $default = null)
-    {
-        return $this->items->get($key, $default);
-    }
-
-    /**
-     * @param mixed $key
-     * @return bool
-     */
-    public function has($key): bool
-    {
-        return $this->items->has($key);
-    }
-
-    public function merge($items): self
-    {
-        $this->items = $this->items->merge($items);
-
-        return $this;
+        $this->items = array_merge(
+            $this->default,
+            $this->getArrayableItems($items)
+        );
     }
 
     public function __get($key)
@@ -44,18 +25,18 @@ abstract class Base implements JsonSerializable
 
     public function __set($key, $value): void
     {
-        $this->items->put($key, $value);
+        $this->put($key, $value);
     }
 
     public function __isset($key): bool
     {
-        return $this->items->has($key);
+        return $this->has($key);
     }
 
-    public function jsonSerialize(): array
+    public function set($key, $value): self
     {
-        return $this->items->toArray();
-    }
+        data_set($this->items, $key, $value);
 
-    abstract protected function getBaseItems(): Collection;
+        return $this;
+    }
 }

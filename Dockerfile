@@ -1,10 +1,9 @@
-FROM phpdockerio/php74-fpm:latest
+FROM php:8.1-fpm-alpine
 
-ARG DEBIAN_FRONTEND=noninteractive
-
-RUN apt-get -y update \
-    && apt-get -y --no-install-recommends install php7.4-mysql php7.4-exif php7.4-pcov\
-    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+RUN apk add --no-cache $PHPIZE_DEPS bash \
+    && docker-php-ext-install pdo pdo_mysql exif \
+    && pecl install pcov \
+    && docker-php-ext-enable pcov
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
